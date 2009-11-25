@@ -1,0 +1,113 @@
+<html>
+<body>
+ <div id="wikiheader" style="margin-bottom:1em"> 
+ 
+ <span style="font-size:120%;font-weight:bold">Documentation</span> 
+ &nbsp;
+ 
+ 
+ <div style="font-style:italic; margin-top: 3px">Documentation for the framework.</div> 
+ 
+ </div> 
+ <h1><a name="Introduction"/>Introduction</h1><p>Sometimes we sacrifice encapsulation just to let us access a method or field of an object from its unit test. This framework uses reflection and dynamic proxies to access private portion of your objects when unit testing them, allowing you to keep your objects strongly encapsulated and still test their internals using the accessors provided by the framework itself. </p><p>For example, given the following class: </p><pre class="prettyprint">public class AnObject {
+  private int anInt;
+  private String aString;
+  ...
+  private void aMethod(int value) {
+    ...
+  }
+ 
+  private String anotherMethod() {
+    ...
+  }
+}</pre><p>If you needed to access those fields from the unit tests, you would normally sacrifice encapsulation for testing and you might change the class to: </p><pre class="prettyprint">public class AnObject {
+  int anInt;
+  String aString;
+  ...
+  void aMethod(int value) {
+    ...
+  }
+ 
+  String anotherMethod() {
+    ...
+  }
+}</pre><p>and you think that that&#x27;s right, because is one of the practices described in the JUnit documentation: &quot;write your tests in the same package so you can access package private elements of the object&quot;. </p><p>I&#x27;ve never been happy with that because, sometimes, you change visibility not for a design choice, but for testing necessity. Unfortunately, unless well documented, this information is lost, and future maintainers may use this accessibility for development, thinking that that is OK by design, undermining the stability and correctness of the application. </p><p>What if we could make those fields and methods accessible only when testing but leaving them private normally? Well that&#x27;s why I thought of this small framework.  </p><h1><a name="How_to_use_the_framework"/>How to use the framework</h1><p>The classes of the framework are very simple and they are there just remove the boiler plate code to use reflection and make a method or a field accessible. </p><p>NOTE: if your classes install a security manager, you need to add to the security policy file the following privileges during the execution of unit tests: </p><pre class="prettyprint">permission java.lang.reflect.ReflectPermission &quot;suppressAccessChecks&quot;;</pre><h2><a name="Field_accessor"/>Field accessor</h2><p>With the class <tt>FieldAccessor</tt> you can access a field of an object, no matter what is its visibility access. Given the above class, if we wanted to access &quot;anInt&quot; and &quot;aString&quot; we simply write: </p><pre class="prettyprint">...
+AType target = ...;
+FieldAccessor&lt;AType,Integer&gt; anInt = new FieldAccessor&lt;AType,Integer&gt;(&quot;anInt&quot;, AType.class);
+FieldAccessor&lt;AType,String&gt; aString = new FieldAccessor&lt;AType,Integer&gt;(&quot;aString&quot;, AType.class);
+...
+assertEquals(26071973,anInt.get(target).intValue());
+assertEquals(&quot;expected&quot;, aString.get(target));
+...</pre><p>where &quot;target&quot; is an instance of the object containing the fields. </p><p>Accessing static fields is mainly the same, but you use the StaticFieldAccessor<a href="/p/accessive/w/edit/StaticFieldAccessor">?</a> class: </p><pre class="prettyprint">...
+AType target = ...;
+StaticFieldAccessor&lt;AType,Integer&gt; aStaticInt = new FieldAccessor&lt;AType,Integer&gt;(&quot;aStaticInt&quot;, AType.class);
+...
+assertEquals(26071973,anStaticInt.get().intValue());
+...</pre><p>Note that, while the <tt>FieldAccessor</tt> class walks the class hierarchy up to search for the field, the StaticFieldAccessor<a href="/p/accessive/w/edit/StaticFieldAccessor">?</a> only accepts static fields declared in the specified class. </p><h2><a name="Method_accessor"/>Method accessor</h2><p>With the classes <tt>MethodAccessor&lt;V&gt;</tt> and <tt>VoidMethodAccessor</tt> you can access a method of an object, no matter what is its visibility access. Given the above class, if we wanted to access &quot;aMethod&quot; and &quot;anotherMethod&quot; we simply write: </p><pre class="prettyprint">...
+VoidMethodAccessor aMethod = new VoidMethodAccessor(&quot;aMethod&quot;, target, int.class);
+MethodAccessor&lt;String&gt; anotherMethod = new MethodAccessor&lt;String&gt;(&quot;anotherMethod&quot;, target);
+...
+assertEquals(&quot;expected&quot;, anotherMethod.invoke());
+...
+aMethod.invoke(26072007);
+...</pre><p>Note that the framework uses varargs making the syntax very neat. </p><h2><a name="Class_accessor"/>Class accessor</h2><p>The <tt>ClassAccessor</tt> allows you to access and create instances of private inner classes. Once you obtain a <tt>ClassAccessor</tt> instance through one of the provided factory methods, you can then obtain <tt>ClassConstructor</tt>s with which you can create new instances or <tt>ProxyAccesors</tt>  for an instance created by the <tt>ClassConstructor</tt>. For example, given the class: </p><pre class="prettyprint">public class AnOuterClass {
+ 
+  private class AnInnerClass {
+    ...
+  }
+}</pre><p>you can create a <tt>ClassAccessor</tt> as: </p><pre class="prettyprint">...
+ClassAccessor inner = ClassAccessor.create(AnOuterClass.class,&quot;AnInnerClass&quot;);
+...
+ClassConstructor ctor = inner.constructor(new AnOuterClass());
+...
+AnAccessorInterface access = ctor.newProxy(AnAccessorInterface.class);
+...</pre><p>See the class documentation for more details. </p><h2><a name="Proxy_accessor"/>Proxy accessor</h2><p>The <tt>ProxyAccessor</tt> is a strongly typed accessor, and more convenient when you want to make accessible multiple methods and fields on an object. It uses the power of dynamic proxies. Let us show an example: Imagine to have a class: </p><pre class="prettyprint">class ATarget {
+  private AType field;
+  private void aMethod(int aValue) {
+    ...
+  }
+  private String anotherMethod() {
+    ...
+  }
+}</pre><p>We need to define an interface for the dynamic proxy </p><pre class="prettyprint">interface AnObjectAccessor {
+  public void aMethod(int aValue);
+  public String anotherMethod();
+  public AType getField();
+  public void setField(AType value);
+}</pre><p>Then we can simply use the accessor as: </p><pre class="prettyprint">...
+AnObjectAccessor accessor = new ProxyAccessor.createAccessor(AnObjectAccessor.class, target);
+assertEquals(&quot;expected&quot;, accessor.anotherMethod());
+...
+accessor.aMethod(26072007);
+...
+accessor.getField();
+accessor.setField(value);
+...</pre><p>Note how <tt>JavaBean</tt> style methods are automatically mapped on matching fields without the need of defining them in the accessed class. </p><p>Sometimes, though, existing objects do not follow the <tt>JavaBean</tt> convention; to solve that problem, a <tt>ProxyAccessor</tt> can be created by providing a mapping between expected and actual names. For example, if we had: </p><pre class="prettyprint">class AnotherTarget {
+  private AType NonJavaBeanField;
+  private void aMethod(int aValue) {
+    ...
+  }
+  private String anotherMethod() {
+    ...
+  }
+}</pre><p>you can still create a <tt>ProxyAccessor</tt> for <tt>AnotherTarget</tt> using <tt>AnObjectAccessor</tt> as: </p><pre class="prettyprint">...
+Map&lt;String,String&gt; mapping = new HashMap&lt;String,String&gt;();
+// map the interface method to a JavaBean method
+mapping.put(&quot;getField&quot;, &quot;getNonJavaBeanField&quot;);
+// map a JavaBean field to a non JavaBean field
+mapping.put(&quot;nonJavaBeanField&quot;, &quot;NonJavaBeanField&quot;);
+// Note how the mapping is transitive so that in the end &quot;getField&quot; is mapped to &quot;NonJavaBeanField&quot;
+AnObjectAccessor accessor = new ProxyAccessor.createAccessor(AnObjectAccessor.class, target, mapping);
+assertEquals(&quot;expected&quot;, accessor.anotherMethod());
+...
+accessor.aMethod(26072007);
+...
+accessor.getField();
+accessor.setField(value);
+...</pre><p>As you can see the proxy accessor makes things even more natural.   </p> 
+ </td> 
+ </tr> 
+ </table> 
+ </div> 
+</body>
+</html>
