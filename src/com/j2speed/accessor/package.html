@@ -40,7 +40,12 @@ assertEquals(26071973,anInt.get(target).intValue());
 assertEquals(&quot;expected&quot;, aString.get(target));
 ...</pre><p>where &quot;target&quot; is an instance of the object containing the fields. </p><p>Accessing static fields is mainly the same, but you use the StaticFieldAccessor<a href="/p/accessive/w/edit/StaticFieldAccessor">?</a> class: </p><pre class="prettyprint">...
 AType target = ...;
-StaticFieldAccessor&lt;AType,Integer&gt; aStaticInt = new FieldAccessor&lt;AType,Integer&gt;(&quot;aStaticInt&quot;, AType.class);
+StaticFieldAccessor&lt;AType,Integer&gt; aStaticInt = new StaticFieldAccessor &lt;AType,Integer&gt;(&quot;aStaticInt&quot;, AType.class);
+...
+assertEquals(26071973,anStaticInt.get().intValue());
+...</pre><p>You can avoid generics clutter by using the provided factory methods, eg. the above could be expressed as: </p><pre class="prettyprint">...
+AType target = ...;
+StaticFieldAccessor&lt;AType,Integer&gt; aStaticInt = StaticFieldAccessor.make(&quot;aStaticInt&quot;, AType.class);
 ...
 assertEquals(26071973,anStaticInt.get().intValue());
 ...</pre><p>Note that, while the <tt>FieldAccessor</tt> class walks the class hierarchy up to search for the field, the StaticFieldAccessor<a href="/p/accessive/w/edit/StaticFieldAccessor">?</a> only accepts static fields declared in the specified class. </p><h2><a name="Method_accessor"/>Method accessor</h2><p>With the classes <tt>MethodAccessor&lt;V&gt;</tt> and <tt>VoidMethodAccessor</tt> you can access a method of an object, no matter what is its visibility access. Given the above class, if we wanted to access &quot;aMethod&quot; and &quot;anotherMethod&quot; we simply write: </p><pre class="prettyprint">...
@@ -50,7 +55,10 @@ MethodAccessor&lt;String&gt; anotherMethod = new MethodAccessor&lt;String&gt;(&q
 assertEquals(&quot;expected&quot;, anotherMethod.invoke());
 ...
 aMethod.invoke(26072007);
-...</pre><p>Note that the framework uses varargs making the syntax very neat. </p><h2><a name="Class_accessor"/>Class accessor</h2><p>The <tt>ClassAccessor</tt> allows you to access and create instances of private inner classes. Once you obtain a <tt>ClassAccessor</tt> instance through one of the provided factory methods, you can then obtain <tt>ClassConstructor</tt>s with which you can create new instances or <tt>ProxyAccesors</tt>  for an instance created by the <tt>ClassConstructor</tt>. For example, given the class: </p><pre class="prettyprint">public class AnOuterClass {
+...</pre><p>You can avoid generics clutter by using the provided factory methods, eg. the above could be expressed as: </p><pre class="prettyprint">...
+VoidMethodAccessor aMethod = new VoidMethodAccessor(&quot;aMethod&quot;, target, int.class);
+MethodAccessor&lt;String&gt; anotherMethod = MethodAccessor.make(&quot;anotherMethod&quot;, target);
+...</pre><p>Note that the framework uses varargs making the syntax very neat. </p><h2><a name="Class_accessor"/>Class accessor</h2><p>The <tt>ClassAccessor</tt> allows you to access and create instances of private inner classes. Once you obtain a <tt>ClassAccessor</tt> instance through one of the provided factory methods, you can then obtain <tt>ClassConstructor</tt>s with which you can create new instances or <tt>ProxyAccessors</tt>  for an instance created by the <tt>ClassConstructor</tt>. For example, given the class: </p><pre class="prettyprint">public class AnOuterClass {
  
   private class AnInnerClass {
     ...
@@ -104,10 +112,20 @@ accessor.aMethod(26072007);
 ...
 accessor.getField();
 accessor.setField(value);
-...</pre><p>As you can see the proxy accessor makes things even more natural.   </p> 
+...</pre><p>As you can see the proxy accessor makes things even more natural. </p><h2><a name="Accessors_factory"/>Accessors factory</h2><p>A convenience static factory is provide to allow its static import and use its methods directly to create accessors, so for example you can do something like this: </p><pre class="prettyprint">import static com.j2speed.accessor.Accessor.*;
+...
+FieldAccessor&lt;AType,Integer&gt; anInt = accessField(&quot;anInt&quot;, AType.class);
+...
+StaticFieldAccessor&lt;AType,Integer&gt; aStaticInt = accessStaticField(&quot;aStaticInt&quot;, AType.class);
+...
+VoidMethodAccessor aMethod = accessVoidMethod(&quot;aMethod&quot;, target, int.class);
+...
+MethodAccessor&lt;String&gt; anotherMethod = accessMethod(&quot;anotherMethod&quot;, target);
+...
+AnObjectAccessor accessor = proxy(AnObjectAccessor.class, target);</pre><p>As you can see the factory allows to further reduce the clutter and provides a pretty neat syntax. </p><p>See the class javadoc for all provided factory methods. </p> 
  </td> 
  </tr> 
  </table> 
  </div> 
-</body>
+ </body>
 </html>

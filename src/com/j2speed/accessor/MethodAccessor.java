@@ -30,6 +30,26 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class MethodAccessor<T> extends AbstractMethodAccessor<T> {
 
   /**
+   * Generic builder. Convenience to remove generics pollution while creating an
+   * accessor.
+   * 
+   * @param <T>
+   *          the return type of the method
+   *          
+   * @param methodName
+   *          the method name
+   * @param target
+   *          the target object
+   * @param parametersType
+   *          the parameters signature.
+   * @return an instance of {@link MethodAccessor} with the specified generic
+   *         parameters.
+   */
+  public static <T> MethodAccessor<T> make(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
+    return new MethodAccessor<T>(methodName, target, parametersType);
+  }
+
+  /**
    * Constructor.
    * 
    * @param methodName

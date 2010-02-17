@@ -1,4 +1,13 @@
 Release Notes
+ Revision 1.1
+ 
+ New Features
+ - Added factory methods on each accessor class to remove generic pollution.
+ - Added Accessors factory to make it easier to build accessors.
+
+ Fixes
+ ISSUE 7: Method ClassAccessor.constructor(Class<?>...) now throws IllegalStateException only if the accessed class is inner and not static
+ 
  Revision 1.0
  
  New Features

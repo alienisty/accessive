@@ -17,6 +17,7 @@ package com.j2speed.accessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -25,11 +26,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * An accessor for classes that are package private or for private inner
  * classes.
  * <p>
- * With this object it is possible to create instances of otherwise non
- * accessible classes.
+ * With this object it is possible to create instances of otherwise non accessible classes.
  * <p>
- * Created instances can be proxied using a known interface to make their use
- * more convenient.
+ * Created instances can be proxied using a known interface to make their use more convenient.
  * 
  * @version trunk
  * @since 1.0
@@ -65,9 +64,8 @@ public class ClassAccessor {
    * Creates a {@link ClassAccessor} for the inner class with the specified name
    * within the specified class.
    * <p>
-   * The name for the class accepts the dot notation so that a "Nested" class
-   * that is an inner class of the inner class "Inner" can be represented as
-   * "Inner.Nested".
+   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
+   * of the inner class "Inner" can be represented as "Inner.Nested".
    * 
    * @param enclosing
    *          the {@link Class} enclosing the class with the specified name.
@@ -103,9 +101,8 @@ public class ClassAccessor {
    * Creates a {@link ClassAccessor} for the inner class with the specified name
    * within the specified class.
    * <p>
-   * The name for the class accepts the dot notation so that a "Nested" class
-   * that is an inner class of the inner class "Inner" can be represented as
-   * "Inner.Nested".
+   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
+   * of the inner class "Inner" can be represented as "Inner.Nested".
    * 
    * @param enclosing
    *          the {@link Class} enclosing the class with the specified name.
@@ -146,9 +143,8 @@ public class ClassAccessor {
    * Creates a {@link ClassAccessor} for the inner class with the specified name
    * within the accessed class.
    * <p>
-   * The name for the class accepts the dot notation so that a "Nested" class
-   * that is an inner class of the inner class "Inner" can be represented as
-   * "Inner.Nested".
+   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
+   * of the inner class "Inner" can be represented as "Inner.Nested".
    * 
    * @param name
    *          the inner class name.
@@ -169,9 +165,9 @@ public class ClassAccessor {
    */
   @NonNull
   public ClassConstructor constructor(@NonNull Class<?>... parameterTypes) {
-    if (enclosingClass != null) { throw new IllegalStateException("The class " + accessedClass + " is an inner class"); }
+    if (enclosingClass != null && !Modifier.isStatic(accessedClass.getModifiers())) { throw new IllegalStateException("The class " + accessedClass + " is a non-static inner class"); }
     try {
-      Constructor<?> constructor = (Constructor<?>) accessedClass.getDeclaredConstructor(parameterTypes);
+      Constructor<?> constructor = accessedClass.getDeclaredConstructor(parameterTypes);
       return new ClassConstructor(constructor);
     }
     catch (RuntimeException e) {
@@ -187,8 +183,8 @@ public class ClassAccessor {
    * the accessed {@link Class}.
    * 
    * @param enclosing
-   *          the instance of the enclosing the class the the
-   *          {@link ClassConstructor} will use to build an instance of the
+   *          the instance of the enclosing the class the the {@link ClassConstructor} will use to
+   *          build an instance of the
    *          inner class.
    * @param parameterTypes
    *          the parameters types for the constructor to build.
@@ -202,7 +198,7 @@ public class ClassAccessor {
       Class<?>[] newParameterTypes = new Class<?>[parameterTypes.length + 1];
       System.arraycopy(parameterTypes, 0, newParameterTypes, 1, parameterTypes.length);
       newParameterTypes[0] = enclosingClass;
-      Constructor<?> constructor = (Constructor<?>) accessedClass.getDeclaredConstructor(newParameterTypes);
+      Constructor<?> constructor = accessedClass.getDeclaredConstructor(newParameterTypes);
       return new InnerClassConstructor(enclosing, constructor);
     }
     catch (RuntimeException e) {

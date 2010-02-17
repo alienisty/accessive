@@ -63,20 +63,56 @@ public class StaticFieldAccessorTest {
   }
 
   /**
-   * Test method for
-   * {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
    */
   @Test
   public void testSet() {
     int newValue = 26072007;
-
-    aStaticPrivate.set(Integer.valueOf(newValue));
-    assertEquals(newValue, aStaticPrivate.get().intValue());
     try {
-      aStaticPrivate.set(null);
+      aStaticPrivate.set(Integer.valueOf(newValue));
+      assertEquals(newValue, aStaticPrivate.get().intValue());
+      try {
+        aStaticPrivate.set(null);
+        fail();
+      }
+      catch (IllegalArgumentException e) {
+        // ok
+      }
     }
-    catch (IllegalArgumentException e) {
-      // ok
+    finally {
+      aStaticPrivate.set(27022008);
+    }
+  }
+
+  /**
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#get()}.
+   */
+  @Test
+  public void testGetFactoryMethod() {
+    aStaticPrivate = StaticFieldAccessor.make("aStaticPrivate", TestObject.class);
+    assertEquals(27022008, aStaticPrivate.get().intValue());
+  }
+
+  /**
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
+   */
+  @Test
+  public void testSetFactoryMethod() {
+    int newValue = 26072007;
+    aStaticPrivate = StaticFieldAccessor.make("aStaticPrivate", TestObject.class);
+    try {
+      aStaticPrivate.set(Integer.valueOf(newValue));
+      assertEquals(newValue, aStaticPrivate.get().intValue());
+      try {
+        aStaticPrivate.set(null);
+        fail();
+      }
+      catch (IllegalArgumentException e) {
+        // ok
+      }
+    }
+    finally {
+      aStaticPrivate.set(27022008);
     }
   }
 

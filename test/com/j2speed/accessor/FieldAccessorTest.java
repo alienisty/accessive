@@ -78,6 +78,37 @@ public class FieldAccessorTest {
     assertEquals(newValue, aPrivate.get(toTest).intValue());
     try {
       aPrivate.set(toTest, null);
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+      // ok
+    }
+  }
+
+  /**
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#get()}.
+   */
+  @Test
+  public void testGetFactoryMethod() {
+    aPrivate = FieldAccessor.make("aPrivate", TestObject.class);
+    TestObject toTest = new TestObject();
+    assertEquals(26071973, aPrivate.get(toTest).intValue());
+  }
+
+  /**
+   * Test method for
+   * {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
+   */
+  @Test
+  public void testSetFactoryMethod() {
+    aPrivate = FieldAccessor.make("aPrivate", TestObject.class);
+    TestObject toTest = new TestObject();
+    int newValue = 26072007;
+    aPrivate.set(toTest, Integer.valueOf(newValue));
+    assertEquals(newValue, aPrivate.get(toTest).intValue());
+    try {
+      aPrivate.set(toTest, null);
+      fail();
     }
     catch (IllegalArgumentException e) {
       // ok

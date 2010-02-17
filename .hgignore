@@ -1,0 +1,3 @@
+glob:.svn
+glob:build
+glob:bin

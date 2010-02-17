@@ -31,6 +31,26 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  *          the type of the field.
  */
 public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
+  
+  /**
+   * Generic builder. Convenience to remove generics pollution while creating an
+   * accessor.
+   * 
+   * @param <T>
+   *          the type of the target type which hierarchy contains the field.
+   * @param <V>
+   *          the type of the field.
+   * @param fieldName
+   *          the field name
+   * @param type
+   *          the class from which to start searching the field
+   * @return an instance of {@link StaticFieldAccessor} with the specified
+   *         generic parameters.
+   */
+  @NonNull
+  public static <T, V> StaticFieldAccessor<T, V> make(@NonNull String fieldName, @NonNull Class<? extends T> type) {
+    return new StaticFieldAccessor<T, V>(fieldName, type);
+  }
 
   /**
    * Constructor.

@@ -73,4 +73,19 @@ public class MethodAccessorTest {
     assertEquals(expected, setPrivate.invoke(Integer.valueOf(newValue)).intValue());
     assertEquals(newValue, getPrivate.invoke().intValue());
   }
+
+  @Test
+  public void testInvokeFactoryMethod() {
+    TestObject test = new TestObject();
+    getPrivate = MethodAccessor.make("getPrivate", test, new Class[0]);
+    setPrivate = MethodAccessor.make("setPrivate", test, new Class[] {
+      int.class });
+    int expected = 26071973;
+    assertEquals(expected, getPrivate.invoke().intValue());
+
+    int newValue = 26072007;
+    assertEquals(expected, setPrivate.invoke(Integer.valueOf(newValue)).intValue());
+    assertEquals(newValue, getPrivate.invoke().intValue());
+  }
+
 }

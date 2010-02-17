@@ -39,4 +39,23 @@ class PackagePrivateObject {
     @SuppressWarnings("unused")
     private class Nested {}
   }
+
+  @SuppressWarnings("unused")
+  private static class StaticInner {
+
+    private final Date date;
+
+    private StaticInner(Date date) {
+      this.date = date;
+    }
+
+    private Date getDate() {
+      return date;
+    }
+
+    @Override
+    public String toString() {
+      return "Static" + date;
+    }
+  }
 }

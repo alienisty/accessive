@@ -15,6 +15,7 @@
  */
 package com.j2speed.accessor;
 
+import static com.j2speed.accessor.Accessors.*;
 import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.HashMap;
@@ -149,6 +150,32 @@ public class ProxyAccessorTest {
   public void testCheckInterface2() {
     CheckInterface check = ProxyAccessor.createAccessor(CheckInterface.class, ProxyAccessor.class);
     check.checkInterface(TestObjectAccess.class);
+  }
+
+  /**
+   * Test method for {@link com.j2speed.accessor.Accessors#proxy(java.lang.Class, java.lang.Object)}
+   * .
+   */
+  @Test
+  public void testProxyClassOfTObject() {
+    CheckInterface check = proxy(CheckInterface.class, ProxyAccessor.class);
+    assertNotNull(check);
+  }
+
+  /**
+   * Test method for
+   * {@link com.j2speed.accessor.Accessors#proxy(java.lang.Class, java.lang.Object, java.util.Map)}.
+   */
+  @Test
+  public void testProxyClassOfTObjectMapOfStringString() {
+    Map<String, String> map = new HashMap<String, String>();
+    map.put("getBirthDate", "getPrivate");
+    map.put("shutUp", "throwingMethod");
+    map.put("getNonStandard", "getANonStandardJavaBeanStyleField");
+    map.put("aNonStandardJavaBeanStyleField", "ANonStandardJavaBeanStyleField");
+
+    TestRenameObjectAccess access = proxy(TestRenameObjectAccess.class, test, map);
+    assertNotNull(access);
   }
 
   private interface TestObjectAccess extends Super {

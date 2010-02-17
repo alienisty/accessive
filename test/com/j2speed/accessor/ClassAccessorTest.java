@@ -8,6 +8,13 @@ import org.junit.Test;
 import com.j2speed.accessor.ClassAccessorTest.AccessPackageProtectedObject.AccessInner;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
+/**
+ * Unit test case for class ClassAccessor.
+ * 
+ * @version trunk
+ * @since 1.0
+ * @author Alessandro Nistico
+ */
 public class ClassAccessorTest {
 
   @Test(expected = RuntimeException.class)
@@ -170,6 +177,13 @@ public class ClassAccessorTest {
     Object object = accessor.constructor(String.class).newInstance("Alex");
     ClassAccessor innerAccessor = accessor.forInner("Inner");
     assertNotNull(innerAccessor.constructor(object, Date.class));
+  }
+
+  @Test
+  public void testConstructorObjectClassOfQArrayStatic() {
+    ClassAccessor accessor = ClassAccessor.create("com.j2speed.accessor.separate.PackagePrivateObject");
+    ClassAccessor innerAccessor = accessor.forInner("StaticInner");
+    assertNotNull(innerAccessor.constructor(Date.class));
   }
 
   interface AccessPackageProtectedObject {
