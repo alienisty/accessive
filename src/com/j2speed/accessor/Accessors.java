@@ -1,17 +1,14 @@
 /**
  * Copyright © 2010 J2Speed. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package com.j2speed.accessor;
 
@@ -27,7 +24,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * @author Alessandro Nistico
  */
 public abstract class Accessors {
-  private Accessors() {/* factory class;*/}
+  private Accessors() {/* factory class; */}
 
   /**
    * Creates an accessor to a non static field.
@@ -40,12 +37,27 @@ public abstract class Accessors {
    *          the field name
    * @param type
    *          the class from which to start searching the field
-   * @return an instance of {@link FieldAccessor} with the specified generic
-   *         parameters.
+   * @return an instance of {@link FieldAccessor} with the specified generic parameters.
    */
   @NonNull
   public static <T, V> FieldAccessor<T, V> accessField(@NonNull String fieldName, @NonNull Class<? extends T> type) {
     return new FieldAccessor<T, V>(fieldName, type);
+  }
+
+  /**
+   * Returns the value, if any, in a field with the specified name found in the type hierarchy of the target object.
+   * 
+   * @param <V>
+   *          the type of the field.
+   * 
+   * @param fieldName
+   *          the name of the field to access.
+   * @param target
+   *          the target object to search.
+   * @return the value found in the specified field, or <code>null</code>.
+   */
+  public static <V> V accessField(@NonNull String fieldName, @NonNull Object target) {
+    return new FieldAccessor<Object, V>(fieldName, (Class<?>) target.getClass()).get(target);
   }
 
   /**
@@ -59,8 +71,7 @@ public abstract class Accessors {
    *          the field name
    * @param type
    *          the class from which to start searching the field
-   * @return an instance of {@link FieldAccessor} with the specified generic
-   *         parameters.
+   * @return an instance of {@link FieldAccessor} with the specified generic parameters.
    */
   @NonNull
   public static <T, V> StaticFieldAccessor<T, V> accessStaticField(@NonNull String fieldName, @NonNull Class<? extends T> type) {
@@ -79,8 +90,7 @@ public abstract class Accessors {
    *          the target object
    * @param parametersType
    *          the parameters signature.
-   * @return an instance of {@link MethodAccessor} with the specified generic
-   *         parameters.
+   * @return an instance of {@link MethodAccessor} with the specified generic parameters.
    */
   @NonNull
   public static <T> MethodAccessor<T> accessMethod(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
@@ -96,8 +106,7 @@ public abstract class Accessors {
    *          the target object
    * @param parametersType
    *          the parameters signature.
-   * @return an instance of {@link MethodAccessor} with the specified generic
-   *         parameters.
+   * @return an instance of {@link MethodAccessor} with the specified generic parameters.
    */
   @NonNull
   public static VoidMethodAccessor accessVoidMethod(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
@@ -117,11 +126,10 @@ public abstract class Accessors {
   }
 
   /**
-   * Creates a {@link ClassAccessor} for the inner class with the specified name
-   * within the specified class.
+   * Creates a {@link ClassAccessor} for the inner class with the specified name within the specified class.
    * <p>
-   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
-   * of the inner class "Inner" can be represented as "Inner.Nested".
+   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class of the inner class
+   * "Inner" can be represented as "Inner.Nested".
    * 
    * @param enclosing
    *          the {@link Class} enclosing the class with the specified name.
@@ -149,11 +157,10 @@ public abstract class Accessors {
   }
 
   /**
-   * Creates a {@link ClassAccessor} for the inner class with the specified name
-   * within the specified class.
+   * Creates a {@link ClassAccessor} for the inner class with the specified name within the specified class.
    * <p>
-   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
-   * of the inner class "Inner" can be represented as "Inner.Nested".
+   * The name for the class accepts the dot notation so that a "Nested" class that is an inner class of the inner class
+   * "Inner" can be represented as "Inner.Nested".
    * 
    * @param enclosing
    *          the {@link Class} enclosing the class with the specified name.
@@ -169,16 +176,15 @@ public abstract class Accessors {
   }
 
   /**
-   * Creates a proxy that give access to the methods in the target that match
-   * the ones defined in the provided interface.
+   * Creates a proxy that give access to the methods in the target that match the ones defined in the provided
+   * interface.
    * <p>
-   * Note that the target must match all methods in the provided interface, regardless the access
-   * level, they can even be private that is.<br>
+   * Note that the target must match all methods in the provided interface, regardless the access level, they can even
+   * be private that is.<br>
    * Note also that to match, the return type can be a superclass of the target method return type.
    * </p>
    * <p>
-   * If you need to access static methods, the target must be the Class instance in which those
-   * methods are defined.
+   * If you need to access static methods, the target must be the Class instance in which those methods are defined.
    * </p>
    * 
    * @param <T>
@@ -198,18 +204,17 @@ public abstract class Accessors {
   }
 
   /**
-   * Creates a proxy that give access to the methods in the target that match
-   * the ones defined in the provided interface.
+   * Creates a proxy that give access to the methods in the target that match the ones defined in the provided
+   * interface.
    * <p>
-   * This variant allows to map methods in the interface to methods in the target instance so that
-   * they don't have to match natively. For example, if the interface defines a method
-   * getSomething() but the target instance defines something() instead, we could provide a Map that
-   * contains the key,value pair <"getSomething","something"> and the accessor would map those two
-   * methods.
+   * This variant allows to map methods in the interface to methods in the target instance so that they don't have to
+   * match natively. For example, if the interface defines a method getSomething() but the target instance defines
+   * something() instead, we could provide a Map that contains the key,value pair <"getSomething","something"> and the
+   * accessor would map those two methods.
    * </p>
    * <p>
-   * If you need to access only static methods, the target must be the Class instance in which those
-   * methods are defined.
+   * If you need to access only static methods, the target must be the Class instance in which those methods are
+   * defined.
    * </p>
    * 
    * @param <T>
@@ -219,9 +224,8 @@ public abstract class Accessors {
    * @param target
    *          The object that matches the interface's methods.
    * @param namesMapping
-   *          a mapping of names between a method in the interface to the actual
-   *          method name in the target instance or between a standard JavaBean
-   *          field name and the actual field name in the target instance.
+   *          a mapping of names between a method in the interface to the actual method name in the target instance or
+   *          between a standard JavaBean field name and the actual field name in the target instance.
    * @return A proxy instance that implements T
    * @throws NoSuchMethodException
    *           if the target doesn't match one of the interface's methods.
