@@ -22,7 +22,7 @@
   <property name="test.dir" value="build/test" />
   <property name="test.classes.dir" value="${test.dir}/classes" />
   <property name="build.classes.dir" value="build/classes" />
-  <property name="cobertura.dir" value="../../cobertura-1.9.3" />
+  <property name="cobertura.dir" value="../../cobertura-1.9.4.1" />
   <property name="instrumented.dir" value="build/instrumented" />
   <property name="cobertura.data.file" value="build/cobertura.ser" />
 
