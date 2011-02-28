@@ -44,7 +44,7 @@
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <target name="jar" depends="build">
-    <jar destfile="build/${ant.project.name}.jar">
+    <jar destfile="build/${ant.project.name}-${version}.jar">
       <fileset dir="${basedir}">
         <include name="LICENSE.txt" />
       </fileset>
@@ -139,7 +139,7 @@
     </javadoc>
   </target>
 
-  <target name="release" depends="tag-version, test, jar, docs" description="make accessive-xxx.zip">
+  <target name="release" depends="clean, tag-version, test, jar, docs" description="make accessive-xxx.zip">
     <zip destfile="build/${ant.project.name}-${version}.zip">
       <zipfileset dir="${basedir}">
         <include name="README.txt" />
@@ -149,7 +149,7 @@
         <include name="test/" />
       </zipfileset>
       <zipfileset dir="${basedir}/build">
-        <include name="accessive.jar" />
+        <include name="${ant.project.name}-${version}.jar" />
         <include name="docs/" />
         <include name="test/" />
       </zipfileset>
