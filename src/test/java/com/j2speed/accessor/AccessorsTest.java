@@ -1,5 +1,5 @@
 /**
- * Copyright © 2010 J2Speed. All rights reserved.
+ * Copyright ï¿½ 2010 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.junit.Test;
  * Unit test case for class Accessors.
  * 
  * @version trunk
- * @since
+ * @since trunk
  * @author Alessandro Nistico
  */
 public class AccessorsTest {

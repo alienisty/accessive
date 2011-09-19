@@ -1,8 +1,0 @@
-K 10
-svn:ignore
-V 39
-junit.jar
-
-org.hamcrest.core_1.1.0.jar
-
-END
