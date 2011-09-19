@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,8 @@ public class ReturningMethodAccessor<T> extends AbstractMethodAccessor<T> {
    * @param parametersType
    *          the parameters signature.
    */
-  public ReturningMethodAccessor(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
+  public ReturningMethodAccessor(@NonNull String methodName, Object target,
+    @NonNull Class<?>... parametersType) {
     super(methodName, target, parametersType);
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,22 +30,21 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public class MethodAccessor<T> extends AbstractMethodAccessor<T> {
 
   /**
-   * Generic builder. Convenience to remove generics pollution while creating an
-   * accessor.
+   * Generic builder. Convenience to remove generics pollution while creating an accessor.
    * 
    * @param <T>
    *          the return type of the method
-   *          
+   * 
    * @param methodName
    *          the method name
    * @param target
    *          the target object
    * @param parametersType
    *          the parameters signature.
-   * @return an instance of {@link MethodAccessor} with the specified generic
-   *         parameters.
+   * @return an instance of {@link MethodAccessor} with the specified generic parameters.
    */
-  public static <T> MethodAccessor<T> make(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
+  public static <T> MethodAccessor<T> make(@NonNull String methodName, Object target,
+    @NonNull Class<?>... parametersType) {
     return new MethodAccessor<T>(methodName, target, parametersType);
   }
 
@@ -59,7 +58,8 @@ public class MethodAccessor<T> extends AbstractMethodAccessor<T> {
    * @param parametersType
    *          the parameters signature.
    */
-  public MethodAccessor(@NonNull String methodName, Object target, @NonNull Class<?>... parametersType) {
+  public MethodAccessor(@NonNull String methodName, Object target,
+    @NonNull Class<?>... parametersType) {
     super(methodName, target, parametersType);
   }
 

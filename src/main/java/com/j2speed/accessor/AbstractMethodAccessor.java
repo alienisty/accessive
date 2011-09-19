@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -54,12 +54,12 @@ abstract class AbstractMethodAccessor<T> {
    * @param parametersType
    *          the parameters signature.
    */
-  AbstractMethodAccessor(@NonNull String methodName, @NonNull Object target, @NonNull Class<?>... parametersType) {
+  AbstractMethodAccessor(@NonNull String methodName, @NonNull Object target,
+    @NonNull Class<?>... parametersType) {
     try {
       method = getMethod(target.getClass(), methodName, parametersType);
       this.target = target;
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
     }
   }
@@ -75,27 +75,24 @@ abstract class AbstractMethodAccessor<T> {
   final T invokeBase(@NonNull Object... args) {
     try {
       return (T) method.invoke(target, args);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
-    }
-    catch (InvocationTargetException e) {
+    } catch (InvocationTargetException e) {
       throw new RuntimeException(e.getTargetException());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
-  
+
   @NonNull
-  static final Method getMethod(@NonNull Class<?> cls, @NonNull String name, @NonNull Class<?>... parametersType) {
+  static final Method getMethod(@NonNull Class<?> cls, @NonNull String name,
+    @NonNull Class<?>... parametersType) {
     while (cls != Object.class) {
       try {
         Method method = cls.getDeclaredMethod(name, parametersType);
         method.setAccessible(true);
         return method;
-      }
-      catch (NoSuchMethodException e) {
+      } catch (NoSuchMethodException e) {
         cls = cls.getSuperclass();
       }
     }

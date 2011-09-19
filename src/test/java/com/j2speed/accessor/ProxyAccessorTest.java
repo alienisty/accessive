@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,8 +121,7 @@ public class ProxyAccessorTest {
     try {
       access.shutUp();
       fail("Expected TestException");
-    }
-    catch (TestException e) {
+    } catch (TestException e) {
       // OK
     }
     assertEquals(-1, access.getNonStandard());

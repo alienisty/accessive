@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,12 +74,10 @@ public class StaticFieldAccessorTest {
       try {
         aStaticPrivate.set(null);
         fail();
-      }
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         // ok
       }
-    }
-    finally {
+    } finally {
       aStaticPrivate.set(27022008);
     }
   }
@@ -106,12 +104,10 @@ public class StaticFieldAccessorTest {
       try {
         aStaticPrivate.set(null);
         fail();
-      }
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         // ok
       }
-    }
-    finally {
+    } finally {
       aStaticPrivate.set(27022008);
     }
   }

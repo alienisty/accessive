@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,8 +27,8 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
- * A generator of proxies to create instances of objects with public access on
- * an object's private methods.
+ * A generator of proxies to create instances of objects with public access on an object's private
+ * methods.
  * <p>
  * For example, given the class:
  * 
@@ -43,13 +43,13 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * }
  * </pre>
  * 
- * If you wanted to access or test directly the private methods, you need to
- * define an interface like:
+ * If you wanted to access or test directly the private methods, you need to define an interface
+ * like:
  * 
  * <pre>
  * interface TestObjectAccess {
  * 
- *   // Using JavaBean matching style to map a field to a standard accessor method. 
+ *   // Using JavaBean matching style to map a field to a standard accessor method.
  *   public int getAPrivate();
  * 
  *   public void throwingMethod() throws TestException;
@@ -66,9 +66,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * 
  * </p>
  * <p>
- * Note that, if the object declare a method with throwing exceptions, you can
- * declare the same exceptions in the interface method so that you can test for
- * them as well.
+ * Note that, if the object declare a method with throwing exceptions, you can declare the same
+ * exceptions in the interface method so that you can test for them as well.
  * </p>
  * 
  * @version trunk
@@ -79,21 +78,20 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 public abstract class ProxyAccessor {
 
   private ProxyAccessor() {
-  // static factory
+    // static factory
   }
 
   /**
-   * Creates a proxy that give access to the methods in the target that match
-   * the ones defined in the provided interface.
+   * Creates a proxy that give access to the methods in the target that match the ones defined in
+   * the provided interface.
    * <p>
-   * Note that the target must match all methods in the provided interface,
-   * regardless the access level, they can even be private that is.<br>
-   * Note also that to match, the return type can be a superclass of the target
-   * method return type.
+   * Note that the target must match all methods in the provided interface, regardless the access
+   * level, they can even be private that is.<br>
+   * Note also that to match, the return type can be a superclass of the target method return type.
    * </p>
    * <p>
-   * If you need to access static methods, the target must be the Class instance
-   * in which those methods are defined.
+   * If you need to access static methods, the target must be the Class instance in which those
+   * methods are defined.
    * </p>
    * 
    * @param <T>
@@ -113,19 +111,18 @@ public abstract class ProxyAccessor {
   }
 
   /**
-   * Creates a proxy that give access to the methods in the target that match
-   * the ones defined in the provided interface.
+   * Creates a proxy that give access to the methods in the target that match the ones defined in
+   * the provided interface.
    * <p>
-   * This variant allows to map methods in the interface to methods in the
-   * target instance so that they don't have to match natively. For example, if
-   * the interface defines a method getSomething() but the target instance
-   * defines something() instead, we could provide a Map that contains the
-   * key,value pair <"getSomething","something"> and the accessor would map
-   * those two methods.
+   * This variant allows to map methods in the interface to methods in the target instance so that
+   * they don't have to match natively. For example, if the interface defines a method
+   * getSomething() but the target instance defines something() instead, we could provide a Map that
+   * contains the key,value pair <"getSomething","something"> and the accessor would map those two
+   * methods.
    * </p>
    * <p>
-   * If you need to access only static methods, the target must be the Class
-   * instance in which those methods are defined.
+   * If you need to access only static methods, the target must be the Class instance in which those
+   * methods are defined.
    * </p>
    * 
    * @param <T>
@@ -135,9 +132,9 @@ public abstract class ProxyAccessor {
    * @param target
    *          The object that matches the interface's methods.
    * @param namesMapping
-   *          a mapping of names between a method in the interface to the actual
-   *          method name in the target instance or between a standard JavaBean
-   *          field name and the actual field name in the target instance.
+   *          a mapping of names between a method in the interface to the actual method name in the
+   *          target instance or between a standard JavaBean field name and the actual field name in
+   *          the target instance.
    * @return A proxy instance that implements T
    * @throws NoSuchMethodException
    *           if the target doesn't match one of the interface's methods.
@@ -145,7 +142,8 @@ public abstract class ProxyAccessor {
    */
   @SuppressWarnings("unchecked")
   @NonNull
-  public static <T> T createAccessor(@NonNull Class<T> type, @NonNull Object target, @CheckForNull Map<String, String> namesMapping) {
+  public static <T> T createAccessor(@NonNull Class<T> type, @NonNull Object target,
+    @CheckForNull Map<String, String> namesMapping) {
     if (namesMapping == null) {
       namesMapping = Collections.emptyMap();
     }
@@ -157,13 +155,11 @@ public abstract class ProxyAccessor {
       Invoker invoker = getInvoker(method, targetClass, namesMapping);
       methodsMap.put(method, invoker);
     }
-    return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {
-      type }, new DynamicInvocationHandler(target, methodsMap));
+    return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, new DynamicInvocationHandler(target, methodsMap));
   }
 
   /**
-   * Tries to find a suitable {@link Invoker} for the specified {@link Method}
-   * in the target class.
+   * Tries to find a suitable {@link Invoker} for the specified {@link Method} in the target class.
    * 
    * @param method
    * @param targetClass
@@ -171,18 +167,20 @@ public abstract class ProxyAccessor {
    * @return
    */
   @NonNull
-  private static Invoker getInvoker(@NonNull Method method, @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
+  private static Invoker getInvoker(@NonNull Method method, @NonNull Class<?> targetClass,
+    @NonNull Map<String, String> namesMapping) {
     String name = namesMapping.get(method.getName());
     name = name == null ? method.getName() : name;
     try {
       Method targetMethod = AbstractMethodAccessor.getMethod(targetClass, name, method.getParameterTypes());
       // Check that the return type of the interface method is compatible with
       // the found method.
-      if (targetMethod.getReturnType().isAssignableFrom(method.getReturnType())) { return new MethodInvoker(targetMethod); }
+      if (targetMethod.getReturnType().isAssignableFrom(method.getReturnType())) {
+        return new MethodInvoker(targetMethod);
+      }
       // It is not compatible, so let's try a JavaBean style mapping
       return getJavaBeanStyleInvoker(name, method, targetClass, namesMapping);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       return getJavaBeanStyleInvoker(name, method, targetClass, namesMapping);
     }
   }
@@ -190,13 +188,16 @@ public abstract class ProxyAccessor {
   /**
    * Tries to find a suitable field in the target class to map with the method.
    */
-  private static Invoker getJavaBeanStyleInvoker(@NonNull String name, @NonNull Method method, @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
+  private static Invoker getJavaBeanStyleInvoker(@NonNull String name, @NonNull Method method,
+    @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
     // try to find a java bean style compatible field
     int paramCount = method.getParameterTypes().length;
     if (paramCount == 0) {
       // could be a bean getter
-      if (name.startsWith("is")) return getBooleanGetter(name, method, targetClass, namesMapping);
-      else if (name.startsWith("get")) return getGetter(name, method, targetClass, namesMapping);
+      if (name.startsWith("is"))
+        return getBooleanGetter(name, method, targetClass, namesMapping);
+      else if (name.startsWith("get"))
+        return getGetter(name, method, targetClass, namesMapping);
     } else if (paramCount == 1 && name.startsWith("set")) {
       // could be a setter
       return getSetter(name, method, targetClass, namesMapping);
@@ -209,39 +210,49 @@ public abstract class ProxyAccessor {
   /**
    * Tries to map an "is" style getter to a boolean field in the target class.
    */
-  private static Invoker getBooleanGetter(@NonNull String name, @NonNull Method method, @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
+  private static Invoker getBooleanGetter(@NonNull String name, @NonNull Method method,
+    @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
     Field field = BaseFieldAccessor.getField(targetClass, getFieldName(2, name, namesMapping));
     Class<?> fieldType = field.getType();
     Class<?> returnType = method.getReturnType();
-    if ((returnType == boolean.class || returnType == Boolean.class) && (fieldType == boolean.class || fieldType == Boolean.class)) { return new FieldGetter(field); }
+    if ((returnType == boolean.class || returnType == Boolean.class) && (fieldType == boolean.class || fieldType == Boolean.class)) {
+      return new FieldGetter(field);
+    }
     throw new RuntimeException("No bean field for method: " + method);
   }
 
   /**
    * Tries to map a "get" style getter to a boolean field in the target class.
    */
-  private static Invoker getGetter(@NonNull String name, @NonNull Method method, @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
+  private static Invoker getGetter(@NonNull String name, @NonNull Method method,
+    @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
     Field field = BaseFieldAccessor.getField(targetClass, getFieldName(3, name, namesMapping));
     Class<?> returnType = method.getReturnType();
-    if ((returnType == Object.class || returnType.equals(field.getType())) && returnType != void.class && returnType != Void.class) { return new FieldGetter(field); }
+    if ((returnType == Object.class || returnType.equals(field.getType())) && returnType != void.class && returnType != Void.class) {
+      return new FieldGetter(field);
+    }
     throw new RuntimeException("No bean field for method: " + method);
   }
 
   /**
    * Tries to mat a "set"ter to a field in the target class.
    */
-  private static Invoker getSetter(@NonNull String name, @NonNull Method method, @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
+  private static Invoker getSetter(@NonNull String name, @NonNull Method method,
+    @NonNull Class<?> targetClass, @NonNull Map<String, String> namesMapping) {
     Field field = BaseFieldAccessor.getField(targetClass, getFieldName(3, name, namesMapping));
     Class<?>[] paramTypes = method.getParameterTypes();
     Class<?> returnType = method.getReturnType();
-    if (paramTypes.length == 1 && paramTypes[0].equals(field.getType()) && (returnType == void.class || returnType == Void.class)) { return new FieldSetter(field); }
+    if (paramTypes.length == 1 && paramTypes[0].equals(field.getType()) && (returnType == void.class || returnType == Void.class)) {
+      return new FieldSetter(field);
+    }
     throw new RuntimeException("No bean field for method: " + method);
   }
 
   /**
    * Extracts and maps the field name from the method name.
    */
-  private static String getFieldName(int prefixLength, @NonNull String name, @NonNull Map<String, String> namesMapping) {
+  private static String getFieldName(int prefixLength, @NonNull String name,
+    @NonNull Map<String, String> namesMapping) {
     String fieldName = Character.toLowerCase(name.charAt(prefixLength++)) + name.substring(prefixLength);
     String mappedName = namesMapping.get(fieldName);
     return mappedName == null ? fieldName : mappedName;
@@ -254,7 +265,8 @@ public abstract class ProxyAccessor {
    *          the Class to test.
    */
   private static void checkInterface(@NonNull Class<?> type) {
-    if (!type.isInterface()) throw new IllegalArgumentException("type can only be an interface.");
+    if (!type.isInterface())
+      throw new IllegalArgumentException("type can only be an interface.");
   }
 
   /**
@@ -285,7 +297,8 @@ public abstract class ProxyAccessor {
      * @param methodsMap
      *          the mapped methods.
      */
-    private DynamicInvocationHandler(@NonNull Object target, @NonNull Map<Method, Invoker> methodsMap) {
+    private DynamicInvocationHandler(@NonNull Object target,
+      @NonNull Map<Method, Invoker> methodsMap) {
       this.target = target;
       this.methodsMap = methodsMap;
     }
@@ -296,8 +309,7 @@ public abstract class ProxyAccessor {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       try {
         return methodsMap.get(method).invoke(target, args);
-      }
-      catch (InvocationTargetException ie) {
+      } catch (InvocationTargetException ie) {
         throw ie.getTargetException();
       }
     }
@@ -310,7 +322,8 @@ public abstract class ProxyAccessor {
    */
   private static interface Invoker {
 
-    Object invoke(@NonNull Object obj, @NonNull Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+    Object invoke(@NonNull Object obj, @NonNull Object... args) throws IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException;
   }
 
   /**
@@ -328,7 +341,8 @@ public abstract class ProxyAccessor {
     }
 
     @Override
-    public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Object invoke(Object obj, Object... args) throws IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
       return delegate.invoke(obj, args);
     }
   }
@@ -348,7 +362,8 @@ public abstract class ProxyAccessor {
     }
 
     @Override
-    public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Object invoke(Object obj, Object... args) throws IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
       return accessor.get(obj);
     }
   }
@@ -368,7 +383,8 @@ public abstract class ProxyAccessor {
     }
 
     @Override
-    public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Object invoke(Object obj, Object... args) throws IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
       accessor.set(obj, args[0]);
       return null;
     }

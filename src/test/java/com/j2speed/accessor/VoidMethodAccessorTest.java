@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,7 @@ public class VoidMethodAccessorTest {
     try {
       throwingMethod.invoke();
       fail("Expected test exception");
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       Throwable th = e.getCause();
       if (th instanceof TestException) {
         // OK
@@ -61,8 +60,7 @@ public class VoidMethodAccessorTest {
     try {
       throwingMethod.invoke("wrong");
       fail("Expected test exception");
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // OK
     }
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ public class VoidMethodAccessor extends AbstractMethodAccessor<Void> {
    * @param parametersType
    *          the parameters signature.
    */
-  public VoidMethodAccessor(@NonNull String methodName, @NonNull Object target, @NonNull Class<?>... parametersType) {
+  public VoidMethodAccessor(@NonNull String methodName, @NonNull Object target,
+    @NonNull Class<?>... parametersType) {
     super(methodName, target, parametersType);
   }
 

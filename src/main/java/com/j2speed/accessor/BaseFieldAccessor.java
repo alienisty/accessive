@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,19 +47,18 @@ abstract class BaseFieldAccessor<T, V> {
    *          the class from which to start searching the field
    */
   public BaseFieldAccessor(@NonNull String fieldName, @NonNull Class<? extends T> type) {
-    if (fieldName == null || type == null) throw new NullPointerException();
+    if (fieldName == null || type == null)
+      throw new NullPointerException();
     try {
       field = getField(type, fieldName);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
     }
   }
 
   /**
-   * Utility method to search for a field starting from the specified class and
-   * going up the hierarchy until the field is found or the {@link Object} class
-   * is reached.
+   * Utility method to search for a field starting from the specified class and going up the
+   * hierarchy until the field is found or the {@link Object} class is reached.
    * 
    * @param cls
    *          the class from which to start
@@ -67,8 +66,7 @@ abstract class BaseFieldAccessor<T, V> {
    *          the field name
    * @return the {@link Field} found
    * @throws NoSuchFieldException
-   *           if the field cannot be found within the specified class
-   *           hierarchy.
+   *           if the field cannot be found within the specified class hierarchy.
    */
   @NonNull
   static Field getField(@NonNull Class<?> cls, @NonNull String name) {
@@ -77,8 +75,7 @@ abstract class BaseFieldAccessor<T, V> {
         Field field = cls.getDeclaredField(name);
         field.setAccessible(true);
         return field;
-      }
-      catch (NoSuchFieldException e) {
+      } catch (NoSuchFieldException e) {
         cls = cls.getSuperclass();
       }
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@ public class MethodAccessorTest {
   public void setUp() throws Exception {
     TestObject test = new TestObject();
     getPrivate = new MethodAccessor<Integer>("getPrivate", test, new Class[0]);
-    setPrivate = new MethodAccessor<Integer>("setPrivate", test, new Class[] {
-      int.class });
+    setPrivate = new MethodAccessor<Integer>("setPrivate", test, new Class[] { int.class });
   }
 
   @After
@@ -78,8 +77,7 @@ public class MethodAccessorTest {
   public void testInvokeFactoryMethod() {
     TestObject test = new TestObject();
     getPrivate = MethodAccessor.make("getPrivate", test, new Class[0]);
-    setPrivate = MethodAccessor.make("setPrivate", test, new Class[] {
-      int.class });
+    setPrivate = MethodAccessor.make("setPrivate", test, new Class[] { int.class });
     int expected = 26071973;
     assertEquals(expected, getPrivate.invoke().intValue());
 

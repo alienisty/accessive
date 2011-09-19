@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class TestObject extends SuperTestObject {
   private int wrong;
   @SuppressWarnings("unused")
   private static int aStaticPrivate = 27022008;
-  
+
   @SuppressWarnings("unused")
   private int ANonStandardJavaBeanStyleField = -1;
 
@@ -45,7 +45,7 @@ public class TestObject extends SuperTestObject {
 
   @SuppressWarnings("unused")
   private void nonThrowingMethod() {
-  // do nothing
+    // do nothing
   }
 
   @SuppressWarnings("unused")

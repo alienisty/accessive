@@ -1,5 +1,5 @@
 /**
- * Copyright � 2010 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class AccessorsTest {
     ClassAccessor access = accessClass("com.j2speed.accessor.separate.PackagePrivateObject");
     assertNotNull(access);
   }
-  
+
   /**
    * Test method for {@link com.j2speed.accessor.Accessors#accessClass(Class, String)}.
    */

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,8 +67,7 @@ public class FieldAccessorTest {
   }
 
   /**
-   * Test method for
-   * {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
    */
   @Test
   public void testSet() {
@@ -79,8 +78,7 @@ public class FieldAccessorTest {
     try {
       aPrivate.set(toTest, null);
       fail();
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // ok
     }
   }
@@ -96,8 +94,7 @@ public class FieldAccessorTest {
   }
 
   /**
-   * Test method for
-   * {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
+   * Test method for {@link com.j2speed.accessor.FieldAccessor#set(java.lang.Object)}.
    */
   @Test
   public void testSetFactoryMethod() {
@@ -109,8 +106,7 @@ public class FieldAccessorTest {
     try {
       aPrivate.set(toTest, null);
       fail();
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // ok
     }
   }

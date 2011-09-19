@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  *          the type of the field.
  */
 public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
-  
+
   /**
-   * Generic builder. Convenience to remove generics pollution while creating an
-   * accessor.
+   * Generic builder. Convenience to remove generics pollution while creating an accessor.
    * 
    * @param <T>
    *          the type of the target type which hierarchy contains the field.
@@ -44,11 +43,11 @@ public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
    *          the field name
    * @param type
    *          the class from which to start searching the field
-   * @return an instance of {@link StaticFieldAccessor} with the specified
-   *         generic parameters.
+   * @return an instance of {@link StaticFieldAccessor} with the specified generic parameters.
    */
   @NonNull
-  public static <T, V> StaticFieldAccessor<T, V> make(@NonNull String fieldName, @NonNull Class<? extends T> type) {
+  public static <T, V> StaticFieldAccessor<T, V> make(@NonNull String fieldName,
+    @NonNull Class<? extends T> type) {
     return new StaticFieldAccessor<T, V>(fieldName, type);
   }
 
@@ -62,8 +61,12 @@ public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
    */
   public StaticFieldAccessor(@NonNull String fieldName, @NonNull Class<? extends T> type) {
     super(fieldName, type);
-    if (!Modifier.isStatic(field.getModifiers())) { throw new IllegalArgumentException("Field " + fieldName + " is not static"); }
-    if (!field.getDeclaringClass().equals(type)) { throw new IllegalArgumentException("Field " + fieldName + " is not declared by the class " + type); }
+    if (!Modifier.isStatic(field.getModifiers())) {
+      throw new IllegalArgumentException("Field " + fieldName + " is not static");
+    }
+    if (!field.getDeclaringClass().equals(type)) {
+      throw new IllegalArgumentException("Field " + fieldName + " is not declared by the class " + type);
+    }
   }
 
   /**
@@ -75,11 +78,9 @@ public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
   public final V get() {
     try {
       return (V) field.get(null);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -92,11 +93,9 @@ public class StaticFieldAccessor<T, V> extends BaseFieldAccessor<T, V> {
   public final void set(V value) {
     try {
       field.set(null, value);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

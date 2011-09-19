@@ -1,5 +1,5 @@
 /**
- * Copyright © 2009 J2Speed. All rights reserved.
+ * Copyright (c) 2007-2011 J2Speed. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
- * An accessor for classes that are package private or for private inner
- * classes.
+ * An accessor for classes that are package private or for private inner classes.
  * <p>
  * With this object it is possible to create instances of otherwise non accessible classes.
  * <p>
@@ -61,8 +60,8 @@ public class ClassAccessor {
   }
 
   /**
-   * Creates a {@link ClassAccessor} for the inner class with the specified name
-   * within the specified class.
+   * Creates a {@link ClassAccessor} for the inner class with the specified name within the
+   * specified class.
    * <p>
    * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
    * of the inner class "Inner" can be represented as "Inner.Nested".
@@ -91,15 +90,14 @@ public class ClassAccessor {
   public static final ClassAccessor create(@NonNull String name, @NonNull ClassLoader loader) {
     try {
       return new ClassAccessor(loader.loadClass(name));
-    }
-    catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
 
   /**
-   * Creates a {@link ClassAccessor} for the inner class with the specified name
-   * within the specified class.
+   * Creates a {@link ClassAccessor} for the inner class with the specified name within the
+   * specified class.
    * <p>
    * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
    * of the inner class "Inner" can be represented as "Inner.Nested".
@@ -113,7 +111,8 @@ public class ClassAccessor {
    * @return an instance of {@link ClassAccessor}.
    */
   @NonNull
-  public static final ClassAccessor create(@NonNull Class<?> enclosing, @NonNull String name, @NonNull ClassLoader loader) {
+  public static final ClassAccessor create(@NonNull Class<?> enclosing, @NonNull String name,
+    @NonNull ClassLoader loader) {
     return create(enclosing.getName() + "$" + name.replace('.', '$'), loader);
   }
 
@@ -124,7 +123,9 @@ public class ClassAccessor {
    *          the class to access
    */
   private ClassAccessor(@NonNull Class<?> accessedClass) {
-    if (accessedClass.isInterface()) { throw new IllegalArgumentException("The specified class is an interface"); }
+    if (accessedClass.isInterface()) {
+      throw new IllegalArgumentException("The specified class is an interface");
+    }
     this.enclosingClass = accessedClass.getEnclosingClass();
     this.accessedClass = accessedClass;
   }
@@ -140,8 +141,8 @@ public class ClassAccessor {
   }
 
   /**
-   * Creates a {@link ClassAccessor} for the inner class with the specified name
-   * within the accessed class.
+   * Creates a {@link ClassAccessor} for the inner class with the specified name within the accessed
+   * class.
    * <p>
    * The name for the class accepts the dot notation so that a "Nested" class that is an inner class
    * of the inner class "Inner" can be represented as "Inner.Nested".
@@ -156,8 +157,8 @@ public class ClassAccessor {
   }
 
   /**
-   * Creates a {@link ClassConstructor} that can be used to create instances of
-   * the accessed {@link Class}.
+   * Creates a {@link ClassConstructor} that can be used to create instances of the accessed
+   * {@link Class}.
    * 
    * @param parameterTypes
    *          the parameters types for the constructor to build.
@@ -165,53 +166,54 @@ public class ClassAccessor {
    */
   @NonNull
   public ClassConstructor constructor(@NonNull Class<?>... parameterTypes) {
-    if (enclosingClass != null && !Modifier.isStatic(accessedClass.getModifiers())) { throw new IllegalStateException("The class " + accessedClass + " is a non-static inner class"); }
+    if (enclosingClass != null && !Modifier.isStatic(accessedClass.getModifiers())) {
+      throw new IllegalStateException("The class " + accessedClass + " is a non-static inner class");
+    }
     try {
       Constructor<?> constructor = accessedClass.getDeclaredConstructor(parameterTypes);
       return new ClassConstructor(constructor);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
-    }
-    catch (NoSuchMethodException e) {
+    } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
 
   /**
-   * Creates a {@link ClassConstructor} that can be used to create instances of
-   * the accessed {@link Class}.
+   * Creates a {@link ClassConstructor} that can be used to create instances of the accessed
+   * {@link Class}.
    * 
    * @param enclosing
    *          the instance of the enclosing the class the the {@link ClassConstructor} will use to
-   *          build an instance of the
-   *          inner class.
+   *          build an instance of the inner class.
    * @param parameterTypes
    *          the parameters types for the constructor to build.
    * @return an instance of the specified {@link ClassConstructor}.
    */
   @NonNull
-  public ClassConstructor constructor(@NonNull Object enclosing, @NonNull Class<?>... parameterTypes) {
-    if (enclosingClass == null) { throw new IllegalStateException("The class " + accessedClass + " is not an inner class"); }
-    if (!enclosingClass.isInstance(enclosing)) { throw new IllegalArgumentException("Enclosing instance of type " + enclosing.getClass() + " is not an instance of " + enclosingClass); }
+  public ClassConstructor constructor(@NonNull Object enclosing,
+    @NonNull Class<?>... parameterTypes) {
+    if (enclosingClass == null) {
+      throw new IllegalStateException("The class " + accessedClass + " is not an inner class");
+    }
+    if (!enclosingClass.isInstance(enclosing)) {
+      throw new IllegalArgumentException("Enclosing instance of type " + enclosing.getClass() + " is not an instance of " + enclosingClass);
+    }
     try {
       Class<?>[] newParameterTypes = new Class<?>[parameterTypes.length + 1];
       System.arraycopy(parameterTypes, 0, newParameterTypes, 1, parameterTypes.length);
       newParameterTypes[0] = enclosingClass;
       Constructor<?> constructor = accessedClass.getDeclaredConstructor(newParameterTypes);
       return new InnerClassConstructor(enclosing, constructor);
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw e;
-    }
-    catch (NoSuchMethodException e) {
+    } catch (NoSuchMethodException e) {
       throw new RuntimeException(e);
     }
   }
 
   /**
-   * A constructor for the accessed {@link Class} that allows to create
-   * instances.
+   * A constructor for the accessed {@link Class} that allows to create instances.
    * 
    * @author Alessandro Nistico
    */
@@ -235,24 +237,24 @@ public class ClassAccessor {
     public Object newInstance(@NonNull Object... initargs) {
       try {
         return constructor.newInstance(initargs);
-      }
-      catch (RuntimeException e) {
+      } catch (RuntimeException e) {
         throw e;
-      }
-      catch (InvocationTargetException e) {
+      } catch (InvocationTargetException e) {
         Throwable targetException = e.getTargetException();
-        if (targetException instanceof RuntimeException) { throw (RuntimeException) targetException; }
-        if (targetException instanceof Error) { throw (Error) targetException; }
+        if (targetException instanceof RuntimeException) {
+          throw (RuntimeException) targetException;
+        }
+        if (targetException instanceof Error) {
+          throw (Error) targetException;
+        }
         throw new RuntimeException(targetException);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
 
     /**
-     * Creates a {@link ProxyAccessor} for a newly created instance of the
-     * accessed class.
+     * Creates a {@link ProxyAccessor} for a newly created instance of the accessed class.
      * 
      * @param <I>
      *          the type used to proxy the instance.
@@ -268,24 +270,23 @@ public class ClassAccessor {
     }
 
     /**
-     * Creates a {@link ProxyAccessor} for a newly created instance of the
-     * accessed class.
+     * Creates a {@link ProxyAccessor} for a newly created instance of the accessed class.
      * 
      * @param <I>
      *          the type used to proxy the instance.
      * @param type
      *          the interface to use to proxy the instance.
      * @param namesMapping
-     *          a mapping of names between a method in the interface to the
-     *          actual method name in the target instance or between a standard
-     *          JavaBean field name and the actual field name in the target
-     *          instance.
+     *          a mapping of names between a method in the interface to the actual method name in
+     *          the target instance or between a standard JavaBean field name and the actual field
+     *          name in the target instance.
      * @param initargs
      *          the parameters to use to build the instance.
      * @return the proxied instance.
      */
     @NonNull
-    public final <I> I newProxy(@NonNull Class<I> type, @NonNull Map<String, String> namesMapping, @NonNull Object... initargs) {
+    public final <I> I newProxy(@NonNull Class<I> type, @NonNull Map<String, String> namesMapping,
+      @NonNull Object... initargs) {
       return ProxyAccessor.createAccessor(type, newInstance(initargs), namesMapping);
     }
   }
