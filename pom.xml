@@ -3,7 +3,7 @@
   <groupId>com.j2speed.accessive</groupId>
   <artifactId>accessive</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1</version>
+  <version>1.1.1-SNAPSHOT</version>
   <name>accessive</name>
   <url>http://code.google.com/p/accessive/</url>
   <description>Sometimes we sacrifice encapsulation just to let us access a method or field of an object from its unit tests. This framework uses reflection and dynamic proxies to access private portion of your objects, allowing you to keep them strongly encapsulated and still be able to test their internals using the provided accessors.</description>
@@ -72,6 +72,7 @@
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -81,6 +82,18 @@
            <target>1.6</target>
         </configuration>
       </plugin>
+
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes> <!-- this exclusion seems only to be necessary for older surefire versions -->
+            <exclude>**/TestException*</exclude>
+            <exclude>**/TestObject*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build> 
 </project>
