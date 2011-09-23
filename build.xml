@@ -15,178 +15,259 @@
  * limitations under the License.
  */
 -->
-<project basedir="." default="jar" name="accessive">
+<project basedir="." default="jar" name="accessive" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+  <property name="user.dev" location="${user.home}/.dev/${ant.project.name}" />
+
+  <property file="${user.dev}/build.properties" />
+
+  <property name="artifactId" value="${ant.project.name}" />
   <property name="version" value="trunk" />
   <property name="class.level" value="1.6" />
 
-  <property name="src.dir" value="src/main/java" />
-  <property name="test.src.dir" value="src/test/java" />
-  <property name="test.dir" value="build/test" />
-  <property name="test.classes.dir" value="${test.dir}/classes" />
-  <property name="build.classes.dir" value="build/classes" />
-  <property name="cobertura.dir" value="../../cobertura-1.9.4.1" />
-  <property name="instrumented.dir" value="build/instrumented" />
-  <property name="cobertura.data.file" value="build/cobertura.ser" />
+  <property name="src" location="src/main/java" />
+  <property name="test.src" location="src/test/java" />
+  <property name="build" location="build" />
+  <property name="test" location="${build}/test" />
+  <property name="lib" location="lib" />
+
+  <property name="test.classes" location="${test}/classes" />
+  <property name="build.classes" location="${build}/classes" />
+  <property name="cobertura" location="../../cobertura-1.9.4.1" />
+  <property name="instrumented" location="${build}/instrumented" />
+  <property name="cobertura.data" location="${build}/cobertura.ser" />
+
+  <!-- define artifacts' name, which follows the convention of Maven -->
+  <property name="maven-jar" value="${build}/lib/${artifactId}-${version}.jar" />
+  <property name="maven-javadoc-jar" value="${build}/lib/${artifactId}-${version}-javadoc.jar" />
+  <property name="maven-sources-jar" value="${build}/lib/${artifactId}-${version}-sources.jar" />
+
+  <!-- defined maven snapshots and staging repository id and url -->
+  <property name="maven-snapshots-repository-id" value="sonatype-nexus-snapshots" />
+  <property name="maven-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+  <property name="maven-staging-repository-id" value="sonatype-nexus-staging" />
+  <property name="maven-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
 
   <path id="cobertura.classpath">
-    <fileset dir="${cobertura.dir}">
+    <fileset dir="${cobertura}">
       <include name="cobertura.jar" />
       <include name="lib/**/*.jar" />
     </fileset>
   </path>
 
   <path id="project.classpath">
-    <pathelement location="${build.classes.dir}" />
-    <pathelement location="lib/junit.jar" />
-    <pathelement location="lib/org.hamcrest.core_1.1.0.jar" />
-    <pathelement location="lib/annotations.jar" />
-    <pathelement location="lib/jsr305.jar" />
+    <pathelement location="${build.classes}" />
+    <pathelement location="${lib}/junit.jar" />
+    <pathelement location="${lib}/org.hamcrest.core_1.1.0.jar" />
+    <pathelement location="${lib}/annotations.jar" />
+    <pathelement location="${lib}/jsr305.jar" />
   </path>
 
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <target name="jar" depends="build">
-    <jar destfile="build/${ant.project.name}-${version}.jar">
+    <jar destfile="${build}/${ant.project.name}-${version}.jar">
       <fileset dir="${basedir}">
         <include name="LICENSE.txt" />
       </fileset>
-      <fileset dir="${build.classes.dir}">
+      <fileset dir="${build.classes}">
         <include name="**/*.class" />
       </fileset>
     </jar>
   </target>
 
   <target name="build" depends="init">
-    <javac destdir="${build.classes.dir}" optimize="true" debug="false" target="${class.level}">
+    <javac destdir="${build.classes}" optimize="true" debug="false" target="${class.level}">
       <src path="src" />
       <classpath refid="project.classpath" />
-    	<compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:deprecation" />
     </javac>
   </target>
 
   <target name="init">
-    <mkdir dir="build" />
-    <mkdir dir="${build.classes.dir}" />
-    <mkdir dir="${instrumented.dir}" />
-    <mkdir dir="${test.dir}" />
-    <mkdir dir="${test.classes.dir}" />
+    <mkdir dir="${build}" />
+    <mkdir dir="${build.classes}" />
+    <mkdir dir="${instrumented}" />
+    <mkdir dir="${test}" />
+    <mkdir dir="${test.classes}" />
   </target>
 
   <target name="build-debug" depends="init">
-    <javac destdir="${build.classes.dir}" debug="true" target="${class.level}">
-      <src path="${src.dir}" />
+    <javac destdir="${build.classes}" debug="true" target="${class.level}">
+      <src path="${src}" />
       <classpath refid="project.classpath" />
     </javac>
   </target>
 
   <target name="test" depends="clean, build-debug">
-    <javac destdir="${test.classes.dir}" debug="true" target="${class.level}">
-      <src path="${test.src.dir}" />
+    <javac destdir="${test.classes}" debug="true" target="${class.level}">
+      <src path="${test.src}" />
       <classpath refid="project.classpath" />
-      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:deprecation" />
     </javac>
 
-    <cobertura-instrument todir="${instrumented.dir}" datafile="${cobertura.data.file}">
-      <fileset dir="${build.classes.dir}">
+    <cobertura-instrument todir="${instrumented}" datafile="${cobertura.data}">
+      <fileset dir="${build.classes}">
         <include name="**/*.class" />
       </fileset>
     </cobertura-instrument>
 
-    <junit fork="yes" forkmode="once" printsummary="on" dir="${test.dir}">
-      <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.file}" />
+    <junit fork="yes" forkmode="once" printsummary="on" dir="${test}">
+      <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data}" />
       <formatter type="xml" />
       <classpath>
-        <pathelement location="${instrumented.dir}" />
+        <pathelement location="${instrumented}" />
         <path refid="project.classpath" />
-        <pathelement location="${test.classes.dir}" />
+        <pathelement location="${test.classes}" />
         <path refid="cobertura.classpath" />
       </classpath>
-      <batchtest todir="${test.dir}">
-        <fileset dir="${test.classes.dir}">
+      <batchtest todir="${test}">
+        <fileset dir="${test.classes}">
           <include name="**/*Test.class" />
         </fileset>
       </batchtest>
     </junit>
 
-    <junitreport todir="${test.dir}">
-      <fileset dir="${test.dir}">
+    <junitreport todir="${test}">
+      <fileset dir="${test}">
         <include name="TEST-*.xml" />
       </fileset>
-      <report format="frames" todir="${test.dir}/report/html"/>
+      <report format="frames" todir="${test}/report/html" />
     </junitreport>
 
-    <cobertura-report format="html" datafile="${cobertura.data.file}" destdir="${test.dir}/coverage/html" srcdir="src" />
+    <cobertura-report format="html" datafile="${cobertura.data}" destdir="${test}/coverage/html" srcdir="src" />
 
     <delete>
-      <fileset dir="${test.dir}">
+      <fileset dir="${test}">
         <include name="TEST-*.xml" />
         <include name="TESTS-*.xml" />
       </fileset>
-      <fileset dir="${build.classes.dir}">
+      <fileset dir="${build.classes}">
         <include name="**/*" />
       </fileset>
     </delete>
-    <delete dir="${test.classes.dir}" />
-    <delete dir="${instrumented.dir}" />
-  </target>
-
-  <target name="docs">
-    <javadoc packagenames="com.j2speed.*" sourcepath="${src.dir}" classpathref="project.classpath" defaultexcludes="yes" destdir="build/docs/api" author="true" version="true" use="true" windowtitle="Accessive Framework">
-      <doctitle>
-        <![CDATA[<h1>Accessive Framework</h1>]]>
-		  </doctitle>
-      <bottom>
-        <![CDATA[<i>Copyright &#169; 2007-2009 J2Speed. All rights reserved.</i>]]>
-		 	</bottom>
-    </javadoc>
+    <delete dir="${test.classes}" />
+    <delete dir="${instrumented}" />
   </target>
 
   <target name="release" depends="clean, tag-version, test, jar, docs" description="make accessive-xxx.zip">
-    <zip destfile="build/${ant.project.name}-${version}.zip">
+    <zip destfile="${build}/${ant.project.name}-${version}.zip">
       <zipfileset dir="${basedir}">
         <include name="README.txt" />
         <include name="LICENSE.txt" />
         <include name="build.xml" />
-        <include name="${src.dir}" />
-        <include name="${test.src.dir}" />
+        <include name="${src}" />
+        <include name="${test.src}" />
       </zipfileset>
-      <zipfileset dir="${basedir}/build">
+      <zipfileset dir="${build}">
         <include name="${ant.project.name}-${version}.jar" />
-        <include name="docs/" />
-        <include name="${test.src.dir}" />
+        <include name="javadoc/" />
+        <include name="${test.src}" />
       </zipfileset>
-      <zipfileset dir="${test.dir}">
+      <zipfileset dir="${test}">
         <include name="coverage/" />
         <include name="report/" />
       </zipfileset>
     </zip>
-    <delete dir="${build.classes.dir}" />
+    <delete dir="${build.classes}" />
+  </target>
+
+  <target name="maven-jar" depends="build,docs">
+    <mkdir dir="${build}/lib" />
+    <!-- build the main artifact -->
+    <jar jarfile="${maven-jar}" basedir="${build.classes}" />
+
+    <!-- build the javadoc artifact -->
+    <jar jarfile="${maven-javadoc-jar}">
+      <fileset dir="${build}/javadoc" />
+    </jar>
+
+    <!-- build the sources artifact -->
+    <jar jarfile="${maven-sources-jar}">
+      <fileset dir="${src}" />
+    </jar>
+  </target>
+
+  <target name="maven-deploy" depends="clean,test,maven-jar" description="deploy snapshot version to Maven snapshot repository">
+	<artifact:mvn mavenHome="${maven.home}" fork="yes">
+		<arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+		<arg value="-Durl=${maven-snapshots-repository-url}" />
+		<arg value="-DrepositoryId=${maven-snapshots-repository-id}" />
+		<arg value="-DpomFile=pom.xml" />
+		<arg value="-Dfile=${maven-jar}" />
+	</artifact:mvn>
+  </target>
+
+  <!-- before this, update project version (both build.xml and pom.xml) from SNAPSHOT to RELEASE -->
+  <target name="maven-stage" depends="test,maven-jar" description="deploy release version to Maven staging repository">
+    <!-- sign and deploy the main artifact -->
+    <artifact:mvn mavenHome="${maven.home}" fork="yes">
+      <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+      <arg value="-Durl=${maven-staging-repository-url}" />
+      <arg value="-DrepositoryId=${maven-staging-repository-id}" />
+      <arg value="-DpomFile=pom.xml" />
+      <arg value="-Dfile=${maven-jar}" />
+      <arg value="-Pgpg" />
+      <arg value="-e" />
+    </artifact:mvn>
+
+    <!-- sign and deploy the sources artifact -->
+    <artifact:mvn mavenHome="${maven.home}" fork="yes">
+      <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+      <arg value="-Durl=${maven-staging-repository-url}" />
+      <arg value="-DrepositoryId=${maven-staging-repository-id}" />
+      <arg value="-DpomFile=pom.xml" />
+      <arg value="-Dfile=${maven-sources-jar}" />
+      <arg value="-Dclassifier=sources" />
+      <arg value="-Pgpg" />
+    </artifact:mvn>
+
+    <!-- sign and deploy the javadoc artifact -->
+    <artifact:mvn mavenHome="${maven.home}" fork="yes">
+      <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+      <arg value="-Durl=${maven-staging-repository-url}" />
+      <arg value="-DrepositoryId=${maven-staging-repository-id}" />
+      <arg value="-DpomFile=pom.xml" />
+      <arg value="-Dfile=${maven-javadoc-jar}" />
+      <arg value="-Dclassifier=javadoc" />
+      <arg value="-Pgpg" />
+    </artifact:mvn>
   </target>
 
   <target name="clean">
-    <delete dir="build" />
+    <delete dir="${build}" />
   </target>
-  
+
   <target name="tag-version" description="Tags the current version in the javadoc">
     <replaceregexp byline="true">
       <regexp pattern="@version[\s]*.*$" />
       <substitution expression="@version ${version}" />
-      <fileset dir="${src.dir}">
+      <fileset dir="${src}">
         <include name="**/*.java" />
       </fileset>
-      <fileset dir="${test.src.dir}">
+      <fileset dir="${test.src}">
         <include name="**/*.java" />
       </fileset>
     </replaceregexp>
     <replaceregexp byline="true">
       <regexp pattern="@since[\s]*$" />
       <substitution expression="@since ${version}" />
-      <fileset dir="${src.dir}">
+      <fileset dir="${src}">
         <include name="**/*.java" />
       </fileset>
-      <fileset dir="${test.src.dir}">
+      <fileset dir="${test.src}">
         <include name="**/*.java" />
       </fileset>
     </replaceregexp>
   </target>
+
+  <target name="docs">
+    <javadoc packagenames="com.j2speed.*" sourcepath="${src}" classpathref="project.classpath" defaultexcludes="yes" destdir="${build}/javadoc" author="true" version="true" use="true" windowtitle="Accessive Framework">
+      <doctitle>
+        <![CDATA[<h1>Accessive Framework</h1>]]></doctitle>
+    <bottom>
+      <![CDATA[<i>Copyright &#169; 2007-2009 J2Speed. All rights reserved.</i>]]></bottom>
+</javadoc>
+</target>
+
 </project>
