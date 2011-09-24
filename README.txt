@@ -1,4 +1,10 @@
 Release Notes
+ Revision 1.1.1
+ - Added maven support:
+     groupId:com.j2speed
+     artifactId:accessive
+     version:1.1.1
+
  Revision 1.1
  
  New Features
