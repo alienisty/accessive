@@ -3,7 +3,7 @@
   <groupId>com.j2speed</groupId>
   <artifactId>accessive</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1</version>
+  <version>1.1.2-SNAPSHOT</version>
   <name>accessive</name>
   <url>http://code.google.com/p/accessive/</url>
   <description>Sometimes we sacrifice encapsulation just to let us access a method or field of an object from its unit tests. This framework uses reflection and dynamic proxies to access private portion of your objects, allowing you to keep them strongly encapsulated and still be able to test their internals using the provided accessors.</description>
