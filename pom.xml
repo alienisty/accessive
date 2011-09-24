@@ -18,7 +18,7 @@
 
   <scm>
     <connection>scm:hg:https://code.google.com/p/accessive/</connection>
-    <developerConnection>scm:hg:https://localhost:8000/accessive/</developerConnection>
+    <developerConnection>scm:hg:http://localhost:8000/accessive/</developerConnection>
     <url>https://code.google.com/p/accessive/source/browse/</url>
   </scm>
 
