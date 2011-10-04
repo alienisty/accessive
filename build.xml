@@ -76,7 +76,7 @@
     </jar>
   </target>
 
-  <target name="build" depends="init">
+  <target name="build" depends="init">  		
     <javac destdir="${build.classes}" optimize="true" debug="false" target="${class.level}">
       <src path="src" />
       <classpath refid="project.classpath" />
@@ -112,7 +112,7 @@
       </fileset>
     </cobertura-instrument>
 
-    <junit fork="yes" forkmode="once" printsummary="on" dir="${test}">
+    <junit fork="yes" forkmode="once" printsummary="on" dir="${basedir}">
       <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data}" />
       <formatter type="xml" />
       <classpath>
@@ -135,7 +135,10 @@
       <report format="frames" todir="${test}/report/html" />
     </junitreport>
 
-    <cobertura-report format="html" datafile="${cobertura.data}" destdir="${test}/coverage/html" srcdir="src" />
+    <cobertura-report format="html" 
+                      datafile="${cobertura.data}" 
+    	                destdir="${test}/coverage/html" 
+                      srcdir="${src}" />
 
     <delete>
       <fileset dir="${test}">
@@ -266,7 +269,7 @@
       <doctitle>
         <![CDATA[<h1>Accessive Framework</h1>]]></doctitle>
     <bottom>
-      <![CDATA[<i>Copyright &#169; 2007-2009 J2Speed. All rights reserved.</i>]]></bottom>
+      <![CDATA[<i>Copyright &#169; 2007-2011 J2Speed. All rights reserved.</i>]]></bottom>
 </javadoc>
 </target>
 
